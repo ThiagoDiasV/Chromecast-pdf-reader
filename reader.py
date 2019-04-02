@@ -11,7 +11,7 @@ def acquire_files() -> list:
     Puts all pdf files in a list.
     '''
     path = (r'/pdf samples')
-    files = glob(path, '/*.csv')
+    files = glob(path, '/*.pdf')
     files.sort(key=os.getmtime)
     return files
 
@@ -22,7 +22,8 @@ def text_extract(*files) -> list:
     '''
     pattern = re.compile(r'(PDA-\d{3}nm)|'
                          r'(\d,\d{3}\s\d*\s\d?\d,\d{2}\s\d*\s\d?\d,\d{2})')
-    raw = parser.from_file('pdf samples/Varfarina amostra 1 rep 1.pdf')
+    for file in files:
+        raw = parser.from_file(file)
     text = raw['content']
     result_matches = re.findall(pattern, text)
     return result_matches
@@ -72,6 +73,6 @@ def create_workbook(**results: dict):
 
 if __name__ == '__main__':
     pdf_files = acquire_files()
-    regex_matches = text_extract(*files)
+    regex_matches = text_extract(*pdf_files)
     results = results_extract(regex_matches)
     workbook = create_workbook(**results)
