@@ -2,11 +2,23 @@ from tika import parser
 import re
 from pprint import pprint
 import xlsxwriter
+from glob import glob
+import os
 
 
-def text_extract() -> list:
+def acquire_files() -> list:
     '''
-    Extracts pdf text
+    Puts all pdf files in a list.
+    '''
+    path = (r'/pdf samples')
+    files = glob(path, '/*.csv')
+    files.sort(key=os.getmtime)
+    return files
+
+
+def text_extract(*files) -> list:
+    '''
+    Extracts pdf text.
     '''
     pattern = re.compile(r'(PDA-\d{3}nm)|'
                          r'(\d,\d{3}\s\d*\s\d?\d,\d{2}\s\d*\s\d?\d,\d{2})')
@@ -18,7 +30,7 @@ def text_extract() -> list:
 
 def results_extract(regex_matches: list) -> dict:
     '''
-    Returns a dict with results
+    Returns a dict with results.
     '''
     results = dict()
     for match in regex_matches:
@@ -37,6 +49,7 @@ def create_workbook(**results: dict):
     '''
     workbook = xlsxwriter.Workbook('teste.xlsx')
     worksheet = workbook.add_worksheet()
+    worksheet.set_column(0, 10, 15)
     row = col = 0
     columns_labels = ('Retention time', 'Area', 'Area%', 'Height', 'Height%')
     for label in columns_labels:
@@ -58,6 +71,7 @@ def create_workbook(**results: dict):
 
 
 if __name__ == '__main__':
-    regex_matches = text_extract()
+    pdf_files = acquire_files()
+    regex_matches = text_extract(*files)
     results = results_extract(regex_matches)
     workbook = create_workbook(**results)
