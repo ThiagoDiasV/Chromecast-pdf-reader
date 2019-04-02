@@ -4,7 +4,7 @@ from pprint import pprint
 import xlsxwriter
 
 
-def text_extract():
+def text_extract() -> list:
     '''
     Extracts pdf text
     '''
@@ -16,7 +16,7 @@ def text_extract():
     return result_matches
 
 
-def results_extract(regex_matches):
+def results_extract(regex_matches: list) -> dict:
     '''
     Returns a dict with results
     '''
@@ -30,9 +30,10 @@ def results_extract(regex_matches):
     return results
 
 
-def create_workbook(**results):
+def create_workbook(**results: dict):
     '''
-    Creates a workbook with results
+    Creates a workbook with results.
+    Area% values above 5% will be inserted on worksheet.
     '''
     workbook = xlsxwriter.Workbook('teste.xlsx')
     worksheet = workbook.add_worksheet()
@@ -47,8 +48,9 @@ def create_workbook(**results):
         row += 1
         col = 1
         for value in values:
-            worksheet.write_row(row, col, value)
-            row += 1
+            if float(value[2].replace(',', '.')) > 5:
+                worksheet.write_row(row, col, value)
+                row += 1
         col = 0
 
     workbook.close()
