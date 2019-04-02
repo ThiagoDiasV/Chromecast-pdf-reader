@@ -41,7 +41,7 @@ def text_extract(*files: list) -> dict:
     return files_results_container
 
 
-def create_workbook(**results: dict):
+def create_workbook(**container: dict):
     '''
     Creates a workbook with results.
     Area% values above 5% will be inserted on worksheet.
@@ -49,19 +49,20 @@ def create_workbook(**results: dict):
     workbook = xlsxwriter.Workbook('teste.xlsx')
     worksheet = workbook.add_worksheet()
     worksheet.set_column(0, 10, 15)
-    row = col = 0
+    row = 0
+    col = 2
     columns_labels = ('Retention time', 'Area', 'Area%', 'Height', 'Height%')
     for label in columns_labels:
-        worksheet.write(row, col+1, label)
-        col += 1
+        worksheet.write_row(row, col, columns_labels)
     col = 0
-    for key, values in results.items():
-        worksheet.write(row+1, col, key)
-        row += 1
-        col = 1
-        for value in values:
-            if float(value[2].replace(',', '.')) > 5:
-                worksheet.write_row(row, col, value)
+    ### RESOLVER A LÓGICA ABAIXO PARA PRINTAR NA PLANILHA
+    for file_name, results in container.items():
+        worksheet.write(row, col, file_name)
+        col += 1
+        for pda_lambda, result in results.items():
+            if float(result[0][2].replace(',', '.')) > 5:
+                worksheet.write(row, col, pda_lambda)
+                worksheet.write_row(row, col+1, result[0])
                 row += 1
         col = 0
 
@@ -71,6 +72,5 @@ def create_workbook(**results: dict):
 
 if __name__ == '__main__':
     pdf_files = acquire_files()
-    regex_matches = text_extract(*pdf_files)
-    #results = results_extract(**regex_matches)
-    #workbook = create_workbook(**results)
+    results_containers = text_extract(*pdf_files)
+    workbook = create_workbook(**results_containers)
