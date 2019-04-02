@@ -1,6 +1,7 @@
 from tika import parser
 import re
 from pprint import pprint
+import xlsxwriter
 
 
 def text_extract():
@@ -25,11 +26,36 @@ def results_extract(regex_matches):
             key = match[0]
             results[key] = []
         elif match[1]:
-            results[key].append(match[1])
+            results[key].append(match[1].split(" "))
     return results
+
+
+def create_workbook(**results):
+    '''
+    Creates a workbook with results
+    '''
+    workbook = xlsxwriter.Workbook('teste.xlsx')
+    worksheet = workbook.add_worksheet()
+    row = col = 0
+    columns_labels = ('Retention time', 'Area', 'Area%', 'Height', 'Height%')
+    for label in columns_labels:
+        worksheet.write(row, col+1, label)
+        col += 1
+    col = 0
+    for key, values in results.items():
+        worksheet.write(row+1, col, key)
+        row += 1
+        col = 1
+        for value in values:
+            worksheet.write_row(row, col, value)
+            row += 1
+        col = 0
+
+    workbook.close()
+    return workbook
 
 
 if __name__ == '__main__':
     regex_matches = text_extract()
     results = results_extract(regex_matches)
-    pprint(results)
+    workbook = create_workbook(**results)
