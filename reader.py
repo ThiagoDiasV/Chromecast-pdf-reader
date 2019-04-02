@@ -10,9 +10,9 @@ def acquire_files() -> list:
     '''
     Puts all pdf files in a list.
     '''
-    path = (r'/pdf samples')
-    files = glob(path, '/*.pdf')
-    files.sort(key=os.getmtime)
+    path = (r'pdf samples/')
+    files = glob(path + '/*.pdf')
+    files.sort(key=os.path.getmtime)
     return files
 
 
@@ -20,13 +20,17 @@ def text_extract(*files) -> list:
     '''
     Extracts pdf text.
     '''
+    text_container = dict()
     pattern = re.compile(r'(PDA-\d{3}nm)|'
                          r'(\d,\d{3}\s\d*\s\d?\d,\d{2}\s\d*\s\d?\d,\d{2})')
     for file in files:
+        file_name = os.path.basename(file)[:-4]
         raw = parser.from_file(file)
-    text = raw['content']
-    result_matches = re.findall(pattern, text)
-    return result_matches
+        text = raw['content']
+        result_matches = re.findall(pattern, text)
+        text_container[file_name] = result_matches
+    pprint(text_container)
+    return text_container
 
 
 def results_extract(regex_matches: list) -> dict:
@@ -73,6 +77,7 @@ def create_workbook(**results: dict):
 
 if __name__ == '__main__':
     pdf_files = acquire_files()
+    print(pdf_files)
     regex_matches = text_extract(*pdf_files)
     results = results_extract(regex_matches)
     workbook = create_workbook(**results)
