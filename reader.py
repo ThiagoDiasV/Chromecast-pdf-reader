@@ -7,4 +7,5 @@ raw = parser.from_file('pdf samples/Varfarina amostra 1 rep 1.pdf')
 text = raw['content']
 
 matches = re.findall(pattern, text)
-print(matches)
+#print(matches)
+print(text)
