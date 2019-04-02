@@ -77,7 +77,6 @@ def create_workbook(**results: dict):
 
 if __name__ == '__main__':
     pdf_files = acquire_files()
-    print(pdf_files)
     regex_matches = text_extract(*pdf_files)
     results = results_extract(regex_matches)
     workbook = create_workbook(**results)
