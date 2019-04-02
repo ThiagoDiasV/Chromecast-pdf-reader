@@ -16,7 +16,7 @@ def acquire_files() -> list:
     return files
 
 
-def text_extract(*files) -> list:
+def text_extract(*files: list) -> dict:
     '''
     Extracts pdf text.
     '''
@@ -39,21 +39,6 @@ def text_extract(*files) -> list:
         files_results_container[file_name] = results_container
     pprint(files_results_container)
     return files_results_container
-
-
-def results_extract(regex_matches: dict) -> dict:
-    '''
-    Returns a dict with clean results.
-    '''
-    results = dict()
-    for original_key, match in regex_matches.items():
-        if match[0]:
-            key = match[0]
-            results[key] = []
-        elif match[1]:
-            results[key].append(match[1].split(" "))
-        regex_matches[original_key] = results
-    return regex_matches
 
 
 def create_workbook(**results: dict):
