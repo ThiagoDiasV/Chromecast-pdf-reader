@@ -20,7 +20,7 @@ def text_extract(*files) -> list:
     '''
     Extracts pdf text.
     '''
-    text_container = dict()
+    files_results_container = dict()
     pattern = re.compile(r'(PDA-\d{3}nm)|'
                          r'(\d,\d{3}\s\d*\s\d?\d,\d{2}\s\d*\s\d?\d,\d{2})')
     for file in files:
@@ -28,23 +28,32 @@ def text_extract(*files) -> list:
         raw = parser.from_file(file)
         text = raw['content']
         result_matches = re.findall(pattern, text)
-        text_container[file_name] = result_matches
-    pprint(text_container)
-    return text_container
+        results_container = dict()
+        for match in result_matches:
+            if match[0]:
+                key = match[0]
+                results_container[key] = []
+            elif match[1]:
+                results_container[key].append(match[1].split(" "))
+
+        files_results_container[file_name] = results_container
+    pprint(files_results_container)
+    return files_results_container
 
 
-def results_extract(regex_matches: list) -> dict:
+def results_extract(regex_matches: dict) -> dict:
     '''
-    Returns a dict with results.
+    Returns a dict with clean results.
     '''
     results = dict()
-    for match in regex_matches:
+    for original_key, match in regex_matches.items():
         if match[0]:
             key = match[0]
             results[key] = []
         elif match[1]:
             results[key].append(match[1].split(" "))
-    return results
+        regex_matches[original_key] = results
+    return regex_matches
 
 
 def create_workbook(**results: dict):
@@ -78,5 +87,5 @@ def create_workbook(**results: dict):
 if __name__ == '__main__':
     pdf_files = acquire_files()
     regex_matches = text_extract(*pdf_files)
-    results = results_extract(regex_matches)
-    workbook = create_workbook(**results)
+    #results = results_extract(**regex_matches)
+    #workbook = create_workbook(**results)
