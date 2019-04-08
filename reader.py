@@ -37,7 +37,6 @@ def text_extract(*files: list) -> dict:
                 results_container[key].append(match[1].split(" "))
 
         files_results_container[file_name] = results_container
-    pprint(files_results_container)
     return files_results_container
 
 
@@ -55,17 +54,18 @@ def create_workbook(**container: dict):
     for label in columns_labels:
         worksheet.write_row(row, col, columns_labels)
     col = 0
-    ### RESOLVER A LÓGICA ABAIXO PARA PRINTAR NA PLANILHA
+    row = 1
     for file_name, results in container.items():
         worksheet.write(row, col, file_name)
-        col += 1
-        for pda_lambda, result in results.items():
-            if float(result[0][2].replace(',', '.')) > 5:
-                worksheet.write(row, col, pda_lambda)
-                worksheet.write_row(row, col+1, result[0])
-                row += 1
-        col = 0
-
+        for pda_lambda, values in results.items():
+            if pda_lambda == 'PDA-283nm':
+                worksheet.write(row, col + 1, pda_lambda)
+                for value in values:
+                    area = float(value[2].replace(',', '.'))
+                    if area > 10:
+                        worksheet.write_row(row, col + 2, value)
+                        row += 1
+        row += 1
     workbook.close()
     return workbook
 
