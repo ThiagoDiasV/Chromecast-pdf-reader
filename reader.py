@@ -55,6 +55,7 @@ def create_workbook(**container: dict):
         worksheet.write_row(row, col, columns_labels)
     col = 0
     row = 1
+    # A partir daqui é gambiarra
     for file_name, results in container.items():
         worksheet.write(row, col, file_name)
         for pda_lambda, values in results.items():
