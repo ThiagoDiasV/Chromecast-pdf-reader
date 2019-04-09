@@ -56,11 +56,11 @@ def create_workbook(**container: dict):
         worksheet.write_row(row, col, columns_labels)
     col = 0
     row = 1
-    # A partir daqui é gambiarra
+    wavelength = int(input('Digite o comprimento de onda desejado: '))
     for file_name, results in container.items():
         worksheet.write(row, col, file_name)
         for pda_lambda, values in results.items():
-            if pda_lambda == 'PDA-283nm':
+            if pda_lambda == f'PDA-{wavelength}nm':
                 worksheet.write(row, col + 1, pda_lambda)
                 for value in values:
                     area = float(value[2].replace(',', '.'))
