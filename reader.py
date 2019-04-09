@@ -57,6 +57,7 @@ def create_workbook(**container: dict):
     col = 0
     row = 1
     wavelength = int(input('Digite o comprimento de onda desejado: '))
+    cutoff_area = int(input('Digite um limite mínimo para a área: '))
     for file_name, results in container.items():
         worksheet.write(row, col, file_name)
         for pda_lambda, values in results.items():
@@ -64,7 +65,7 @@ def create_workbook(**container: dict):
                 worksheet.write(row, col + 1, pda_lambda)
                 for value in values:
                     area = float(value[2].replace(',', '.'))
-                    if area > 30:
+                    if area > cutoff_area:
                         worksheet.write_row(row, col + 2, value)
                         row += 1
     workbook.close()
