@@ -1,2 +1,3 @@
 # Chromecast-pdf-reader
-A repository to create a pdf reader to pdf reports from an UHPLC system.
+Chromecast pdf reader is a Python script that is capable to read several pdf files with results from an UHPLC system and creates a worksheet with the main results.
+
