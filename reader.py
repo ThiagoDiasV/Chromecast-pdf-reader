@@ -12,7 +12,7 @@ def acquire_files() -> list:
     '''
     path = (r'pdf samples/')
     files = glob(path + '/*.pdf')
-    files.sort(key=os.path.getmtime)
+    files.sort(key=os.path.splitext)
     return files
 
 
@@ -22,11 +22,12 @@ def text_extract(*files: list) -> dict:
     '''
     files_results_container = dict()
     pattern = re.compile(r'(PDA-\d{3}nm)|'
-                         r'(\d,\d{3}\s\d*\s\d?\d,\d{2}\s\d*\s\d?\d,\d{2})')
+                         r'(\d,\d{3}\s\d*\s\d{1,2}?\d,\d{2}\s\d*\s\d{1,2}?\d,\d{2})')
     for file in files:
         file_name = os.path.basename(file)[:-4]
         raw = parser.from_file(file)
         text = raw['content']
+        print(text)
         result_matches = re.findall(pattern, text)
         results_container = dict()
         for match in result_matches:
@@ -63,10 +64,9 @@ def create_workbook(**container: dict):
                 worksheet.write(row, col + 1, pda_lambda)
                 for value in values:
                     area = float(value[2].replace(',', '.'))
-                    if area > 10:
+                    if area > 30:
                         worksheet.write_row(row, col + 2, value)
                         row += 1
-        row += 1
     workbook.close()
     return workbook
 
