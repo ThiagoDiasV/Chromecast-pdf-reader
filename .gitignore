@@ -1,3 +1,10 @@
 # Files
 .pdf
 pdf samples
+worksheets
+
+# Pipenv
+Pipfile
+
+# vscode
+.vscode
