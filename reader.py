@@ -1,6 +1,5 @@
 from tika import parser
 import re
-from pprint import pprint
 import xlsxwriter
 from glob import glob
 import os
@@ -27,7 +26,6 @@ def text_extract(*files: list) -> dict:
         file_name = os.path.basename(file)[:-4]
         raw = parser.from_file(file)
         text = raw['content']
-        print(text)
         result_matches = re.findall(pattern, text)
         results_container = dict()
         for match in result_matches:
